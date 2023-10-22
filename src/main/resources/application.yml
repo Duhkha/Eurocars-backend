@@ -1,0 +1,13 @@
+configuration:
+  spring:
+    data:
+      mongodb:
+        uri: mongodb+srv://ismarkovacevic:0yYImpJYx7yEAmoc@cluster0.912wbot.mongodb.net/?retryWrites=true&w=majority
+        database: cars
+  swagger:
+    app: 'Car Dealership'
+    description: 'A simple car dealership website built with Spring Boot'
+    developer: 'Ismar Kovačević'
+    email: 'ismar.kovacevic@stu.ibu.edu.ba'
+  mailsender:
+    default: 'sendgrid'
