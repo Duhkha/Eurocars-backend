@@ -1,34 +1,31 @@
 package com.eurocars.core.repository;
 
 import com.eurocars.core.model.Car;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.ListPagingAndSortingRepository;
 
-import java.util.Arrays;
+
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class CarRepository {
-    private List<Car> cars;
+public interface CarRepository extends MongoRepository<Car, String> {
+    @Query(value = "{name: ?0}")
+    List<Car> findByNameCustom(String name);
 
-    public CarRepository(){
-        this.cars= Arrays.asList(
-                new Car("1", "BMW M3", 80000, 2012, 75000.00),
-                new Car("2", "Mercedes SLK200", 125000, 2007, 10000.00),
-                new Car("3", "Audi S8", 35000, 2023, 85000.00)
-        );
-    }
+    @Query(value = "{mileage: { $gte: ?0 }}")
+    List<Car> findByMileageGreaterThanOrEqualTo(int mileage);
 
-    public List<Car> findAll(){
-        return cars;
-    }
+    @Query(value = "{year: ?0}")
+    List<Car> findByYear(int year);
 
-    public Car findById(int id){
-        return cars.stream()
-                .filter(car -> Integer.toString(id).equals(car.getId()))
-                .findFirst()
-                .orElse(null);
-    }
+    @Query(value = "{price: { $lte: ?0 }}")
+    List<Car> findByPriceLessThanOrEqualTo(double price);
 
+    @Query("{}")
+    List<Car> getAllCars();
 
-
+    Optional<Car> findById(String id);
 }

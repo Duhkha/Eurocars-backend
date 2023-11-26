@@ -1,31 +1,40 @@
 package com.eurocars.core.model;
 
 
+import com.eurocars.core.model.enums.UserType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-@Document
-public class User {
+import java.util.Date;
+import java.util.Collection;
+import java.util.List;
+//(collection = "users")
+
+@Document(collection = "users")
+public class User implements UserDetails {
     @Id
     private String id;
 
     private UserType userType;
     private String firstName;
     private String lastName;
-    private String emailAddress;
-    private String phone;
-    private String subject;
-    private String message;
+    private String email;
+    private String password;
 
-    public User(String id, String firstName, String lastName, String emailAddress, String phone, String subject, String message) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.emailAddress = emailAddress;
-        this.phone = phone;
-        this.subject = subject;
-        this.message = message;
-    }
+    private String phone;
+    private Date creationDate;
+
+
+
+
+
+
+
 
     public String getId() {
         return id;
@@ -33,6 +42,14 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 
     public String getFirstName() {
@@ -51,12 +68,52 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(userType.name()));
+
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+
+
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhone() {
@@ -67,19 +124,13 @@ public class User {
         this.phone = phone;
     }
 
-    public String getSubject() {
-        return subject;
+
+
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }

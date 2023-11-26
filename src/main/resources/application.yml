@@ -1,13 +1,28 @@
 configuration:
-  spring:
-    data:
-      mongodb:
-        uri: mongodb+srv://ismarkovacevic:0yYImpJYx7yEAmoc@cluster0.912wbot.mongodb.net/?retryWrites=true&w=majority
-        database: cars
+
   swagger:
     app: 'Car Dealership'
     description: 'A simple car dealership website built with Spring Boot'
     developer: 'Ismar Kovačević'
     email: 'ismar.kovacevic@stu.ibu.edu.ba'
   mailsender:
-    default: 'sendgrid'
+    default: 'mailgun'
+  email:
+    mailgun:
+      domain: https://api.mailgun.net/v3/sandbox6bc4525d8245486fa4cea9bf30e0b812.mailgun.org
+      from-email: Car Dealership <mailgun@sandbox6bc4525d8245486fa4cea9bf30e0b812.mailgun.org>
+      username: api
+      password: aaa99c8773888a71d4f751ceee29377d-3750a53b-b7de38a1
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: cars-db
+
+security:
+  basic:
+    enabled: false
+  jwt:
+    secret: 'mXLjT3Gm4skNsCdntWodbHPb1GqY35fGVaisLwImIp8cLZP7W6'

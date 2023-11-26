@@ -2,29 +2,34 @@ package com.eurocars.core.repository;
 
 
 import com.eurocars.core.model.User;
+import com.eurocars.core.model.enums.UserType;
+import org.springframework.data.mongodb.repository.Aggregation;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class UserRepository {
+public interface UserRepository extends MongoRepository<User, String> {
 
-    private List<User> users;
-
-    public UserRepository(){
-        this.users= Arrays.asList(
-                new User("1", "John", "Lennon", "john.lennon@email.com", "123-456-7890", "Inquiry", "I'm interested in your cars."),
-                new User("2", "Paul", "McCartney", "paul.mccartney@email.com", "987-654-3210", "Appointment", "I'd like to schedule a test drive."),
-                new User("3", "George", "Harrison", "george.harrison@email.com", "555-123-4567", "Question", "Can you provide more information about the BMW M3?"),
-                new User("4", "Ringo", "Starr", "ringo.starr@email.com", "111-222-3333", "Inquiry", "I'm looking for a car in my budget.")
-        );
-    }
-
-    public List<User> findAll(){
-        return users;
-    }
+    @Aggregation(pipeline = """
+        { $match: { _id: { $exists: true } } }
+    """)
+    List<User> findAllCustom();
 
 
+    @Query(value="{email:'?0'}", fields="{'id': 1, 'firstName': 1, 'lastName': 1, 'email': 1, 'username': 1, 'userType': 1}")
+    Optional<User> findByEmailCustom(String email);
+
+    Optional<User> findByEmail(String email);
+
+    @Query(value="{$or:[{email:'?0'}, {username:'?0'}]}")
+    Optional<User> findByUsernameOrEmail(String username);
+
+    Optional<User> findFirstByEmailLike(String emailPattern);
+
+    List<User> findByEmailAndUserTypeOrderByCreationDateDesc(String email, UserType userType);
 }
 

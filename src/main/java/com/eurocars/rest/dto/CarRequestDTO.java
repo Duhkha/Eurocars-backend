@@ -1,16 +1,11 @@
-package com.eurocars.core.model;
+package com.eurocars.rest.dto;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.eurocars.core.model.Car;
 
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "cars")
-public class Car {
-
-    @Id
-    private String id;
+public class CarRequestDTO {
     private String make;
     private String model;
     private Integer year;
@@ -36,13 +31,37 @@ public class Car {
     private List<String> imageUrls;
     private Map<String, List<String>> specifications;
 
-    public String getId() {
-        return id;
+
+    public Car toEntity() {
+        Car car = new Car();
+        car.setMake(make);
+        car.setModel(model);
+        car.setYear(year);
+        car.setMileage(mileage);
+        car.setPriceWithTax(priceWithTax);
+        car.setPriceWithoutTax(priceWithoutTax);
+        car.setMotor(motor);
+        car.setMotorCapacity(motorCapacity);
+        car.setFuel(fuel);
+        car.setMotorStrength(motorStrength);
+        car.setEmissionStandard(emissionStandard);
+        car.setDrivetrain(drivetrain);
+        car.setCountryOfOrigin(countryOfOrigin);
+        car.setTransmission(transmission);
+        car.setBodyStyle(bodyStyle);
+        car.setCarColor(carColor);
+        car.setNumCarDoors(numCarDoors);
+        car.setNumCarSeats(numCarSeats);
+        car.setFuelEconomy(fuelEconomy);
+        car.setRegistration(registration);
+        car.setShortNote(shortNote);
+        car.setLongNote(longNote);
+        car.setImageUrls(imageUrls);
+        car.setSpecifications(specifications);
+
+        return car;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getMake() {
         return make;
@@ -235,9 +254,4 @@ public class Car {
     public void setSpecifications(Map<String, List<String>> specifications) {
         this.specifications = specifications;
     }
-
-
-
-
 }
-
