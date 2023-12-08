@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
+    private final UserGarageService userGarageService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -25,15 +26,18 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, UserGarageService userGarageService) {
         this.userRepository = userRepository;
+        this.userGarageService = userGarageService;
     }
-
     public UserDTO signUp(UserRequestDTO userRequestDTO) {
         userRequestDTO.setPassword(
                 passwordEncoder.encode(userRequestDTO.getPassword())
         );
         User user = userRepository.save(userRequestDTO.toEntity());
+
+        // Create a garage for the user
+        userGarageService.createUserGarage(user.getId());
 
         return new UserDTO(user);
     }

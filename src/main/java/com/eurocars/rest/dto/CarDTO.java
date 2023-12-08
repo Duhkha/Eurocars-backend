@@ -1,8 +1,11 @@
 package com.eurocars.rest.dto;
 
 import com.eurocars.core.model.Car;
+import com.eurocars.core.model.enums.CarStatus;
 
 public class CarDTO {
+
+    private CarStatus carStatus;
     private String id;
     private String name;
     private int mileage;
@@ -13,11 +16,20 @@ public class CarDTO {
     }
 
     public CarDTO(Car car) {
+        this.carStatus=car.getCarStatus();
         this.id = car.getId();
         this.name = car.getMake() + " " + car.getModel();
         this.mileage = car.getMileage();
         this.year = car.getYear();
         this.price = car.getPriceWithTax();
+    }
+
+    public CarStatus getCarStatus() {
+        return carStatus;
+    }
+
+    public void setCarStatus(CarStatus carStatus) {
+        this.carStatus = carStatus;
     }
 
     public String getId() {
@@ -60,6 +72,5 @@ public class CarDTO {
         this.price = price;
     }
 }
-
 
 

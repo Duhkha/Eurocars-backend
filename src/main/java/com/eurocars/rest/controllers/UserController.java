@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/users")
@@ -63,7 +64,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/filter")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDTO> filterUser(@RequestParam String email) {
+    public ResponseEntity<Optional<User>> filterUser(@RequestParam String email) {
         return ResponseEntity.ok(userService.filterByEmail(email));
     }
 

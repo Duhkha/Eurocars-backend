@@ -16,9 +16,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
-
-
-import java.io.NotActiveException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +26,7 @@ import static java.util.stream.Collectors.toList;
 public class UserService {
 
     private final UserRepository userRepository;
+
     @Autowired
     private MailSender mailgunSender;
 
@@ -80,14 +78,14 @@ public class UserService {
         user.ifPresent(userRepository::delete);
     }
 
-    public UserDTO filterByEmail(String email) {
+    public Optional<User> filterByEmail(String email) {
         Optional<User> user = userRepository.findFirstByEmailLike(email);
         // Optional<User> user = userRepository.findByEmailCustom(email);
-        return user.map(UserDTO::new).orElse(null);
+        return user;
     }
 
 
-//username=email
+    //username=email
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override

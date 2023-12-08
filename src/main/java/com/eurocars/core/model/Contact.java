@@ -9,23 +9,43 @@ import java.util.Date;
 customers or guests can contact us about car to make appointment or ask questions
  */
 
-@Document(collection = "appointments")
-public class Appointment {
+@Document(collection = "contacts")
+public class Contact {
 
     @Id
     private String id;
+
 
     private String carId; // Reference to the car
 
     private String userId; // User ID, can be null for guests
 
-    private String userName; // User name, can be null for guests
+    private String firstName;
 
-    private String userEmail; // User email, can be null for guests
+    private String lastName;
+    private String userEmail;
+
+    private String subject;
 
     private String note;
 
-    private Date appointmentDate;
+    private Date creationDate;
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     public String getId() {
         return id;
@@ -51,13 +71,6 @@ public class Appointment {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     public String getUserEmail() {
         return userEmail;
@@ -75,11 +88,20 @@ public class Appointment {
         this.note = note;
     }
 
-    public Date getAppointmentDate() {
-        return appointmentDate;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
-        this.appointmentDate = appointmentDate;
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }
+

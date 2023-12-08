@@ -2,15 +2,17 @@ package com.eurocars.core.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.eurocars.core.model.enums.CarStatus;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Document(collection = "cars")
 public class Car {
 
     @Id
     private String id;
+    private CarStatus carStatus;
     private String make;
     private String model;
     private Integer year;
@@ -34,7 +36,36 @@ public class Car {
     private String shortNote;
     private String longNote;
     private List<String> imageUrls;
-    private Map<String, List<String>> specifications;
+    private List<String> equipment;
+    private Date creationDate;
+
+    private String  town;
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+
+
+    public CarStatus getCarStatus() {
+        return carStatus;
+    }
+
+    public void setCarStatus(CarStatus carStatus) {
+        this.carStatus = carStatus;
+    }
 
     public String getId() {
         return id;
@@ -228,12 +259,12 @@ public class Car {
         this.imageUrls = imageUrls;
     }
 
-    public Map<String, List<String>> getSpecifications() {
-        return specifications;
+    public List<String> getEquipment() {
+        return equipment;
     }
 
-    public void setSpecifications(Map<String, List<String>> specifications) {
-        this.specifications = specifications;
+    public void setEquipment(List<String> equipment) {
+        this.equipment = equipment;
     }
 
 

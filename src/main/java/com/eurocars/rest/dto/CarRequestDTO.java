@@ -1,11 +1,12 @@
 package com.eurocars.rest.dto;
 
 import com.eurocars.core.model.Car;
+import com.eurocars.core.model.enums.CarStatus;
 
 import java.util.List;
-import java.util.Map;
 
 public class CarRequestDTO {
+    private CarStatus carStatus;
     private String make;
     private String model;
     private Integer year;
@@ -29,11 +30,14 @@ public class CarRequestDTO {
     private String shortNote;
     private String longNote;
     private List<String> imageUrls;
-    private Map<String, List<String>> specifications;
+    private List<String> equipment;
+
+    private String town;
 
 
     public Car toEntity() {
         Car car = new Car();
+        car.setCarStatus(carStatus);
         car.setMake(make);
         car.setModel(model);
         car.setYear(year);
@@ -57,11 +61,28 @@ public class CarRequestDTO {
         car.setShortNote(shortNote);
         car.setLongNote(longNote);
         car.setImageUrls(imageUrls);
-        car.setSpecifications(specifications);
+        car.setEquipment(equipment);
+        car.setCreationDate(new java.util.Date());
+        car.setTown(town);
 
         return car;
     }
 
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public CarStatus getCarStatus() {
+        return carStatus;
+    }
+
+    public void setCarStatus(CarStatus carStatus) {
+        this.carStatus = carStatus;
+    }
 
     public String getMake() {
         return make;
@@ -247,11 +268,11 @@ public class CarRequestDTO {
         this.imageUrls = imageUrls;
     }
 
-    public Map<String, List<String>> getSpecifications() {
-        return specifications;
+    public List<String> getEquipment() {
+        return equipment;
     }
 
-    public void setSpecifications(Map<String, List<String>> specifications) {
-        this.specifications = specifications;
+    public void setEquipment(List<String> equipment) {
+        this.equipment = equipment;
     }
 }
