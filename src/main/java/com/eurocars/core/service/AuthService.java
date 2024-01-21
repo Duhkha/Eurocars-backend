@@ -1,6 +1,7 @@
 package com.eurocars.core.service;
 
 import com.eurocars.core.model.User;
+import com.eurocars.core.model.enums.UserType;
 import com.eurocars.core.repository.UserRepository;
 import com.eurocars.exceptions.repository.ResourceNotFoundException;
 import com.eurocars.rest.dto.LoginDTO;
@@ -31,6 +32,9 @@ public class AuthService {
         this.userGarageService = userGarageService;
     }
     public UserDTO signUp(UserRequestDTO userRequestDTO) {
+
+        userRequestDTO.setUserType(UserType.CUSTOMER);
+
         userRequestDTO.setPassword(
                 passwordEncoder.encode(userRequestDTO.getPassword())
         );
@@ -49,8 +53,8 @@ public class AuthService {
         User user = userRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("This user does not exist."));
         String jwt = jwtService.generateToken(user);
-
-        return new LoginDTO(jwt);
+        String userType = user.getUserType().name();
+        return new LoginDTO(jwt, userType);
     }
 
 

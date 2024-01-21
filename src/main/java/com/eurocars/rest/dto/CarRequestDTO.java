@@ -60,7 +60,7 @@ public class CarRequestDTO {
         car.setRegistration(registration);
         car.setShortNote(shortNote);
         car.setLongNote(longNote);
-        car.setImageUrls(imageUrls);
+        car.setImageUrls(this.imageUrls);
         car.setEquipment(equipment);
         car.setCreationDate(new java.util.Date());
         car.setTown(town);

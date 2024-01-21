@@ -20,9 +20,21 @@ spring:
       host: localhost
       port: 27017
       database: cars-db
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB  # Adjust as needed
+      max-request-size: 100MB  # Adjust as needed
 
 security:
   basic:
     enabled: false
   jwt:
     secret: 'mXLjT3Gm4skNsCdntWodbHPb1GqY35fGVaisLwImIp8cLZP7W6'
+
+
+
+
+myapp:
+  storage:
+    location: D:\\projects\\eurocars-2\\images

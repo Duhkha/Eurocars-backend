@@ -7,21 +7,38 @@ public class CarDTO {
 
     private CarStatus carStatus;
     private String id;
-    private String name;
+    private String make;
+    private String model;
     private int mileage;
     private int year;
-    private double price;
+    private double priceWithTax;
+
+    private String firstImageUrl;
 
     public CarDTO() {
+    }
+
+    public String getFirstImageUrl() {
+        return firstImageUrl;
+    }
+
+    public void setFirstImageUrl(String firstImageUrl) {
+        this.firstImageUrl = firstImageUrl;
     }
 
     public CarDTO(Car car) {
         this.carStatus=car.getCarStatus();
         this.id = car.getId();
-        this.name = car.getMake() + " " + car.getModel();
+        this.make = car.getMake();
+        this.model=car.getModel();
         this.mileage = car.getMileage();
         this.year = car.getYear();
-        this.price = car.getPriceWithTax();
+        this.priceWithTax = car.getPriceWithTax();
+        if (car.getImageUrls() != null && !car.getImageUrls().isEmpty()) {
+            this.firstImageUrl = car.getImageUrls().get(0);
+        } else {
+            this.firstImageUrl = null; // or set a default image URL if desired
+        }
     }
 
     public CarStatus getCarStatus() {
@@ -40,12 +57,20 @@ public class CarDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getMake() {
+        return make;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
     }
 
     public int getMileage() {
@@ -64,12 +89,12 @@ public class CarDTO {
         this.year = year;
     }
 
-    public double getPrice() {
-        return price;
+    public double getPriceWithTax() {
+        return priceWithTax;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPriceWithTax(double priceWithTax) {
+        this.priceWithTax = priceWithTax;
     }
 }
 

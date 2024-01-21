@@ -3,21 +3,29 @@ package com.eurocars.rest.controllers;
 import com.eurocars.core.model.Car;
 import com.eurocars.core.model.enums.CarStatus;
 import com.eurocars.core.service.CarService;
+import com.eurocars.exceptions.GeneralException;
 import com.eurocars.rest.dto.CarDTO;
 import com.eurocars.rest.dto.CarRequestDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/cars")
@@ -29,6 +37,11 @@ public class CarController {
     public CarController(CarService carService) {
         this.carService = carService;
     }
+
+    @Value("${myapp.storage.location}")
+    private String storageLocation;
+
+
 /*
 
 
@@ -109,11 +122,63 @@ public ResponseEntity<List<CarDTO>> getCars() {
     filter cars
      */
 
-    @RequestMapping(method = RequestMethod.POST,path = "/add")
+
+
+ @PostMapping("/add")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<CarDTO> addCar(@RequestPart("car") String carJson,
+                                         @RequestPart("images") List<MultipartFile> images) {
+     System.out.println("Received car data: "+ carJson);
+        CarRequestDTO carRequestDTO;
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            carRequestDTO = objectMapper.readValue(carJson, CarRequestDTO.class);
+        } catch (IOException e) {
+            throw new RuntimeException("Error processing car JSON data", e);
+        }
+
+        List<String> imageRelativePaths = processAndStoreImages(images);
+        carRequestDTO.setImageUrls(imageRelativePaths);
+
+        CarDTO savedCar = carService.addCar(carRequestDTO);
+
+        return ResponseEntity.ok(savedCar);
+    }
+
+
+    private List<String> processAndStoreImages(List<MultipartFile> images) {
+        List<String> imageRelativePaths = new ArrayList<>();
+
+        for (MultipartFile file : images) {
+            String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            Path storagePath = Paths.get(storageLocation, filename);
+
+            try {
+                Files.copy(file.getInputStream(), storagePath, StandardCopyOption.REPLACE_EXISTING);
+                imageRelativePaths.add(filename);  // Store just the filename
+            } catch (IOException e) {
+                throw new GeneralException("Failed to store file " + filename, e);
+            }
+        }
+
+        return imageRelativePaths;
+    }
+
+
+
+
+
+
+/*
+og add car no pics
+@RequestMapping(method = RequestMethod.POST,path = "/add")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CarDTO> addCar(@RequestBody CarRequestDTO car) {
         return ResponseEntity.ok(carService.addCar(car));
-    }
+}
+ */
+
+
 
     @RequestMapping(method = RequestMethod.PUT, path = "/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
