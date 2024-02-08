@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Application-specific sensitive files
+src/main/resources/application.yml

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -93,7 +94,51 @@ public class CarService {
         car.ifPresent(carRepository::delete);
     }
 
-    public Page<CarDTO> getCarsWithFilterAndSorting(Map<String, Object> filters, String sortBy, Sort.Direction sortOrder, int page, int size) {
+    public Page<CarDTO> getCarsWithFilterAndSorting(Map<String, Object> filters, String sortBy, Sort.Direction sortOrder, int page, int size,String searchParameter) {
+        if (searchParameter.isEmpty()){
+            Query query = buildQuery(filters);
+
+            //sorting
+            Sort sort = Sort.by(sortOrder, sortBy);
+            query.with(sort);
+
+            //pagination
+            Pageable pageable = PageRequest.of(page, size,sort);
+            Page<Car> resultPage = carRepositoryImpl.executeQuery(query, pageable);
+
+            List<CarDTO> carDTOs = resultPage.getContent().stream()
+                    .map(CarDTO::new)
+                    .collect(Collectors.toList());
+
+
+
+            return new PageImpl<>(carDTOs, pageable, resultPage.getTotalElements());
+
+        }else{
+            List<Car> cars=carRepository.getAllCars();
+            List<CarDTO> carDTOs = cars.stream()
+                    .map(CarDTO::new)
+                    .collect(toList());
+
+            List<CarDTO> result = carDTOs.stream()
+                    .filter(a -> a.getCarName().toLowerCase().contains(searchParameter.toLowerCase()))
+                    .collect(Collectors.toList());
+
+
+            Pageable pageRequest = createPageRequestUsing(page, size);
+            int start = (int) pageRequest.getOffset();
+            int end = Math.min((start + pageRequest.getPageSize()), result.size());
+
+            List<CarDTO> pageContent = result.subList(start, end);
+
+            return new PageImpl<>(pageContent, pageRequest, result.size());
+
+        }
+
+    }
+/*
+
+public Page<CarDTO> getCarsWithFilterAndSorting(Map<String, Object> filters, String sortBy, Sort.Direction sortOrder, int page, int size) {
         Query query = buildQuery(filters);
 
         //sorting
@@ -108,9 +153,43 @@ public class CarService {
                 .map(CarDTO::new)
                 .collect(Collectors.toList());
 
+
+
         return new PageImpl<>(carDTOs, pageable, resultPage.getTotalElements());
 
     }
+
+
+
+
+
+ */
+
+
+    public Page<CarDTO> searchForCars(String searchParameter,int page, int size){
+        List<Car> cars=carRepository.getAllCars();
+        List<CarDTO> carDTOs = cars.stream()
+                .map(CarDTO::new)
+                .collect(toList());
+
+        List<CarDTO> result = carDTOs.stream()
+                .filter(a -> a.getCarName().toLowerCase().contains(searchParameter.toLowerCase()))
+                .collect(Collectors.toList());
+
+
+        Pageable pageRequest = createPageRequestUsing(page, size);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), result.size());
+
+        List<CarDTO> pageContent = result.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageRequest, result.size());
+    }
+
+    private Pageable createPageRequestUsing(int page, int size) {
+        return PageRequest.of(page, size);
+    }
+
 
 
 

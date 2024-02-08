@@ -67,6 +67,7 @@ public ResponseEntity<List<CarDTO>> getCars() {
             @RequestParam(required = false) Optional<Integer> size,
             @RequestParam(required = false) Optional<String> sortBy,
             @RequestParam(required = false) Optional<Sort.Direction> sortOrder,
+            @RequestParam(required = false) Optional<String> search,
             @RequestParam(required = false) List<String> make,
             @RequestParam(required = false) List<String> model,
             @RequestParam(required = false) Integer minYear,
@@ -84,6 +85,7 @@ public ResponseEntity<List<CarDTO>> getCars() {
         // Set default values if not present
         int pageValue = page.orElse(0);
         int sizeValue = size.orElse(2);
+        String searchParameter=search.orElse("");
         String sortByValue = sortBy.orElse("creationDate");
         Sort.Direction sortOrderValue = sortOrder.orElse(Sort.Direction.DESC);
 
@@ -105,7 +107,7 @@ public ResponseEntity<List<CarDTO>> getCars() {
 
         // Call the service method with the provided parameters
         Page<CarDTO> resultPage = carService.getCarsWithFilterAndSorting(
-                filters, sortByValue, sortOrderValue, pageValue, sizeValue);
+                filters, sortByValue, sortOrderValue, pageValue, sizeValue,searchParameter);
 
         // Return the result as a ResponseEntity
         return ResponseEntity.ok(resultPage);
@@ -118,9 +120,20 @@ public ResponseEntity<List<CarDTO>> getCars() {
         return ResponseEntity.ok(carService.findCarById(id));
     }
 
+
+
     /*
-    filter cars
+    search cars
      */
+    @RequestMapping(method = RequestMethod.GET, path = "/search")
+    public ResponseEntity<Page<CarDTO>> searchCars(
+            @RequestParam(required = false) Optional<Integer> page,
+            @RequestParam(required = false) Optional<Integer> size,
+            @RequestParam(required = true) String search){
+        int pageValue = page.orElse(0);
+        int sizeValue = size.orElse(2);
+        return ResponseEntity.ok(carService.searchForCars(search,pageValue,sizeValue));
+    }
 
 
 

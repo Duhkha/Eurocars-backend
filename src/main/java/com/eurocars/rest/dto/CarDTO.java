@@ -5,6 +5,8 @@ import com.eurocars.core.model.enums.CarStatus;
 
 public class CarDTO {
 
+    private String carName;
+
     private CarStatus carStatus;
     private String id;
     private String make;
@@ -27,6 +29,7 @@ public class CarDTO {
     }
 
     public CarDTO(Car car) {
+        this.carName=car.getYear().toString()+" "+car.getMake()+" "+car.getModel();
         this.carStatus=car.getCarStatus();
         this.id = car.getId();
         this.make = car.getMake();
@@ -39,6 +42,14 @@ public class CarDTO {
         } else {
             this.firstImageUrl = null; // or set a default image URL if desired
         }
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
     }
 
     public CarStatus getCarStatus() {
